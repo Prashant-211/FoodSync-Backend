@@ -11,7 +11,7 @@ const uploader = require('./middlewares/multerMiddleware');
 const cloudinary = require('./config/cloudinaryConfig');
 const fs = require('fs/promises');
 const productRouter = require('./routes/productRoute');
-// const User = require('./schema/userSchema')
+//const User = require('./schema/userSchema')
 
 const app = express();
 app.use(cookieParser());
