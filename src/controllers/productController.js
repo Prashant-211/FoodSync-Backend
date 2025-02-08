@@ -66,6 +66,34 @@ async function getProduct(req, res) {
     }
 }
 
+async function getProducts(req, res) {
+    try {
+        const response = await getAllProductsData();;
+        return res.status(200).json({
+            success: true,
+            message: 'Successfully fetched the product',
+            error: {},
+            data: response
+        })
+    } catch (error) {
+        if(error instanceof AppError) {
+            return res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+                data: {},
+                error: error
+            });
+        }
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Something went wrong',
+            data: {},
+            error: error
+        });
+    }
+}
+
 async function deleteProduct(req, res) {
     try {
         const response = await deleteProductById(req.params.id);
@@ -97,5 +125,5 @@ module.exports = {
     addProduct,
     getProduct,
     deleteProduct,
-   // getProducts
+   getProducts
 }

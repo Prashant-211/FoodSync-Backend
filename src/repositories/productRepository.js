@@ -24,19 +24,19 @@ async function getProductById(productId) {
         return product;
     } catch (error) {
         console.log(error);
-        //throw new InternalServerError();
+        throw new InternalServerError();
     }
 }
 
-// async function getAllProducts() {
-//     try {
-//         const products = await Product.find({});
-//         return products;
-//     } catch (error) {
-//         console.log(error);
-//         //throw new InternalServerError();
-//     }
-// }
+async function getAllProducts() {
+    try {
+        const products = await Product.find({});
+        return products;
+    } catch (error) {
+        console.log(error);
+        throw new InternalServerError();
+    }
+}
 
 async function deleteProductById(productId) {
     try {
@@ -44,13 +44,13 @@ async function deleteProductById(productId) {
         return response;
     } catch (error) {
         console.log(error);
-        //throw new InternalServerError();
+        throw new InternalServerError();
     }
 }
 
 module.exports = {
     createProduct,
-    //getAllProducts,
+    getAllProducts,
     getProductById,
     deleteProductById
 }

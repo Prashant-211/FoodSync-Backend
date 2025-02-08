@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
+const cors = require('cors');
+
 const ServerConfig = require('./config/serverConfig')
 const connectDB = require('./config/dbConfig');
 const userRouter = require('./routes/userRoute');
@@ -14,6 +16,12 @@ const orderRouter = require('./routes/orderRoute');
 //const User = require('./schema/userSchema')
 
 const app = express();
+
+app.use(cors({
+    origin: 'http://localhost:5173', // allow to server to accept request from different origin
+    credentials: true, // allow session cookie from browser to pass through
+}));
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.text());
