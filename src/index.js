@@ -34,6 +34,9 @@ app.use('/carts', cartRouter);
 app.use('/auth', authRouter);
 app.use('/products', productRouter)
 app.use('/orders', orderRouter);
+app.get('/', (req, res) => {
+    res.send('Welcome to the FoodSync API! 🚀 The backend is running smoothly.');
+});
 app.get('/ping',(req,res) => {
     //controller
     console.log(req.body);
