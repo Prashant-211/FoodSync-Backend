@@ -1,8 +1,14 @@
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../config/serverConfig');
+const { JWT_SECRET, COOKIE_SECURE } = require('../config/serverConfig');
+const UnAuthorisedError = require('../utils/unauthorisedError');
 
 async function isLoggedIn(req, res, next) {
-    const token = req.cookies["authToken"];
+    console.log("Inside isLoggedIn", req.cookies);
+    // const token = req.cookies["authToken"];
+    const token = req.cookies["authToken"]?.token || req.headers.authorization?.split(' ')[1];
+
+
+    console.log(token);
     if(!token) {
         return res.status(401).json({
             success: false,
@@ -14,6 +20,7 @@ async function isLoggedIn(req, res, next) {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
+        console.log(decoded, decoded.exp, Date.now() / 1000);
 
         if(!decoded) {
             throw new UnAuthorisedError();
@@ -27,7 +34,23 @@ async function isLoggedIn(req, res, next) {
         }
 
         next();
-    } catch(error){
+    } catch (error) {
+        console.log(error.name);
+        if(error.name === "TokenExpiredError") {
+            res.cookie("authToken", "", {
+                httpOnly: true,
+                sameSite: "lax",
+                secure: COOKIE_SECURE,
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                domain: FRONTEND_URL
+            });
+            return res.status(200).json({
+                success: true,
+                message: "Log out successfull",
+                error: {},
+                data: {}
+            });
+        }
         return res.status(401).json({
             success: false,
             data: {},
@@ -47,7 +70,7 @@ function isAdmin(req, res, next) {
     if(loggedInUser.role === "ADMIN") {
         console.log("User is an admin");
         next();
-    } else{
+    } else {
         return res.status(401).json({
             success: false,
             data:{},
@@ -58,8 +81,8 @@ function isAdmin(req, res, next) {
             }
         })
     }
-    
 }
+
 module.exports = {
     isLoggedIn,
     isAdmin
